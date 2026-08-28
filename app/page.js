@@ -7,11 +7,11 @@ import { EmptyIdle, LoadingSkeleton, ErrorView, EmptyResult } from "@/components
 import Quiz from "@/components/Quiz";
 
 export default function Page() {
-  const { status, quiz, errorCode, droppedCount, generate, reset } = useQuiz();
+  const { status, quiz, errorCode, droppedCount, requestedCount, generate, reset } = useQuiz();
   const [topic, setTopic] = useState("");
 
-  const handleGenerate = () => {
-    generate(topic);
+  const handleGenerate = (controls) => {
+    generate(topic, controls);
   };
 
   const handleReset = () => {
@@ -63,12 +63,13 @@ export default function Page() {
 
           {status === "ready" && (
             <div className="flex flex-col gap-[24px]">
-              {droppedCount > 0 && (
+              {(droppedCount > 0 || quiz?.shortfall > 0) && (
                 <p 
                   style={{ fontFamily: "var(--font-ibm-plex-mono)" }}
                   className="text-[12px] text-[var(--ink-soft)]"
                 >
-                  {droppedCount} {droppedCount === 1 ? "question was" : "questions were"} dropped because the model returned {droppedCount === 1 ? "it" : "them"} incomplete.
+                  {quiz?.shortfall > 0 && `You asked for ${requestedCount} questions; ${quiz.questions.length} were usable. `}
+                  {droppedCount > 0 && `${droppedCount} ${droppedCount === 1 ? "question was" : "questions were"} dropped because the model returned ${droppedCount === 1 ? "it" : "them"} incomplete.`}
                 </p>
               )}
               <Quiz quiz={quiz} reset={handleReset} />

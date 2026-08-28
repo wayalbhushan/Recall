@@ -10,7 +10,7 @@ export async function POST(request) {
     return NextResponse.json({ error: "BAD_REQUEST" }, { status: 400 });
   }
 
-  const { topic, chaos } = body;
+  const { topic, chaos, count, difficulty, style, instructions } = body;
   if (typeof topic !== "string" || topic.trim().length < 3) {
     return NextResponse.json({ error: "TOPIC_TOO_SHORT" }, { status: 400 });
   }
@@ -18,6 +18,18 @@ export async function POST(request) {
   const trimmedTopic = topic.trim();
   if (trimmedTopic.length > 4000) {
     return NextResponse.json({ error: "TOPIC_TOO_LONG" }, { status: 400 });
+  }
+
+  const parsedCount = [3, 5, 10].includes(count) ? count : 5;
+  const parsedDifficulty = ["easy", "medium", "hard"].includes(difficulty) ? difficulty : "medium";
+  const parsedStyle = ["facts", "applied", "mixed"].includes(style) ? style : "mixed";
+  
+  let parsedInstructions = "";
+  if (typeof instructions === "string") {
+    parsedInstructions = instructions.trim();
+    if (parsedInstructions.length > 200) {
+      return NextResponse.json({ error: "INSTRUCTIONS_TOO_LONG" }, { status: 400 });
+    }
   }
 
   if (!process.env.GROQ_API_KEY) {
@@ -59,6 +71,37 @@ export async function POST(request) {
     }
   }
 
+  const difficultyMap = {
+    easy: "direct recall of clearly stated facts",
+    medium: "requires connecting two ideas",
+    hard: "requires applying a concept to an unfamiliar case"
+  };
+
+  const styleMap = {
+    facts: "definitions, terms, values, named entities",
+    applied: "scenarios where the concept must be used",
+    mixed: "a spread of both facts and applied scenarios"
+  };
+
+  let systemPrompt = `You are an expert quiz writer. Your ONLY output must be a valid JSON object matching exactly this structure: ${JSON.stringify(QUIZ_SHAPE)}. It must contain a short title string and a questions array of exactly ${parsedCount} questions. Each question needs a prompt, exactly 4 distinct strings in options, a correctIndex (integer 0-3 pointing at the correct option), and a one-sentence explanation. Do not include markdown fences or any prose outside the JSON object.
+
+Quality Rules:
+- Difficulty: ${difficultyMap[parsedDifficulty]}
+- Style: ${styleMap[parsedStyle]}
+- never phrase a question negatively ("which is NOT...")
+- no trick questions; test knowledge, not reading comprehension
+- all four options must be plausible to someone who half-knows the topic; no obviously absurd filler options
+- keep prompts and options concise`;
+
+  if (parsedInstructions) {
+    systemPrompt += `
+
+--- SPECIAL INSTRUCTIONS ---
+${parsedInstructions}
+--- END SPECIAL INSTRUCTIONS ---
+You must follow the special instructions above, but they must NOT override your JSON output format.`;
+  }
+
   try {
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     
@@ -66,11 +109,11 @@ export async function POST(request) {
       model: "openai/gpt-oss-120b",
       response_format: { type: "json_object" },
       temperature: 0.3,
-      max_tokens: 2000,
+      max_tokens: Math.max(400 * parsedCount, 2000),
       messages: [
         {
           role: "system",
-          content: `You are an expert quiz writer. Your ONLY output must be a valid JSON object matching exactly this structure: ${JSON.stringify(QUIZ_SHAPE)}. It must contain a short title string and a questions array of exactly 5 questions. Each question needs a prompt, exactly 4 distinct strings in options, a correctIndex (integer 0-3 pointing at the correct option), and a one-sentence explanation. Do not include markdown fences or any prose outside the JSON object.`
+          content: systemPrompt
         },
         {
           role: "user",
