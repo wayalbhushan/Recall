@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QuestionCard from "./QuestionCard";
 import Results from "./Results";
 
@@ -21,12 +21,36 @@ export default function Quiz({ quiz, reset }) {
   };
 
   const handleNext = () => {
+    if (selectedIndex === undefined) return;
     if (currentIndex < totalActive - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
       setIsFinished(true);
     }
   };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (isFinished) return;
+      if (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT") return;
+
+      if (e.key === "ArrowRight") {
+        if (selectedIndex !== undefined) handleNext();
+      } else if (e.key === "ArrowLeft") {
+        handlePrev();
+      } else if (e.key === "Enter") {
+        if (selectedIndex !== undefined) handleNext();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentIndex, isFinished, selectedIndex, totalActive]);
 
   const handleRetest = (wrongIds) => {
     setActiveIds(wrongIds);
@@ -36,48 +60,63 @@ export default function Quiz({ quiz, reset }) {
 
   if (isFinished) {
     return (
-      <Results 
-        quiz={quiz} 
-        answers={answers} 
-        onRetest={handleRetest} 
-        onReset={reset} 
-      />
+      <div className="animate-screen-enter">
+        <Results 
+          quiz={quiz} 
+          answers={answers} 
+          onRetest={handleRetest} 
+          onReset={reset} 
+        />
+      </div>
     );
   }
 
   const label = isRetest 
-    ? `Retest ${currentIndex + 1} of ${totalActive}`
-    : `Question ${currentIndex + 1} of ${totalActive}`;
+    ? `RETEST ${currentIndex + 1} OF ${totalActive}`
+    : `QUESTION ${currentIndex + 1} OF ${totalActive}`;
 
   const isLast = currentIndex === totalActive - 1;
+  const progressPercent = ((currentIndex + 1) / totalActive) * 100;
 
   return (
-    <div className="flex flex-col gap-[32px] p-[24px] min-h-[400px] bg-[var(--card)] border border-[var(--rule)] rounded-[4px]">
-      <div className="flex justify-between items-center border-b border-[var(--rule)] pb-[16px]">
-        <h3 className="text-[20px] text-[var(--ink)] font-semibold" style={{ fontFamily: "var(--font-ibm-plex-serif)" }}>
-          {quiz.title}
-        </h3>
-        <span style={{ fontFamily: "var(--font-ibm-plex-mono)" }} className="text-[14px] text-[var(--ink-soft)]">
+    <div className="flex flex-col gap-[24px]">
+      <div className="w-full h-[2px] bg-[var(--rule)]">
+        <div 
+          className="h-full bg-[var(--primary)] transition-all duration-200 ease-out" 
+          style={{ width: `${progressPercent}%` }}
+        ></div>
+      </div>
+
+      <div className="flex flex-col gap-[16px]">
+        <span style={{ fontFamily: "var(--font-ibm-plex-mono)" }} className="text-[12px] uppercase text-[var(--ink-soft)]">
           {label}
         </span>
-      </div>
 
-      <div key={activeQuestionId} className="animate-question-enter flex-1">
-        <QuestionCard 
-          question={activeQuestion} 
-          selectedIndex={selectedIndex} 
-          onSelect={handleSelect} 
-        />
-      </div>
+        <div className="bg-[var(--card)] border border-[var(--rule)] rounded-[4px] p-[16px] sm:p-[24px] shadow-[0_1px_2px_rgba(26,29,36,0.04)] min-h-[400px] flex flex-col">
+          <div key={activeQuestionId} className="animate-question-enter flex-1">
+            <QuestionCard 
+              question={activeQuestion} 
+              selectedIndex={selectedIndex} 
+              onSelect={handleSelect} 
+            />
+          </div>
 
-      <div className="flex justify-end pt-[16px] mt-auto">
-        <button
-          onClick={handleNext}
-          disabled={selectedIndex === undefined}
-          className="px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLast ? "Submit" : "Next"}
-        </button>
+          <div className="mt-[24px] pt-[16px] border-t border-[var(--rule)] flex items-center justify-between">
+            <button
+              onClick={handlePrev}
+              className={`px-[16px] py-[8px] text-[16px] text-[var(--ink-soft)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--primary)] rounded-[4px] ${currentIndex === 0 ? "invisible" : ""}`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={selectedIndex === undefined}
+              className="px-[24px] py-[8px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+            >
+              {isLast ? "See results" : "Next"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

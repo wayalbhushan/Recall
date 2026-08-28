@@ -18,10 +18,10 @@ export default function QuestionCard({ question, selectedIndex, onSelect }) {
   }, [onSelect]);
 
   return (
-    <div className="flex flex-col gap-[24px]">
+    <div className="flex flex-col">
       <h2 
-        style={{ fontFamily: "var(--font-ibm-plex-sans)" }}
-        className="text-[20px] text-[var(--ink)] leading-[1.6]"
+        style={{ fontFamily: "var(--font-ibm-plex-sans)", fontWeight: 500 }}
+        className="text-[20px] text-[var(--ink)] leading-[1.4] mb-[24px]"
       >
         {question.prompt}
       </h2>
@@ -33,7 +33,7 @@ export default function QuestionCard({ question, selectedIndex, onSelect }) {
               key={idx}
               onClick={() => onSelect(idx)}
               aria-pressed={isSelected}
-              className={`w-full flex items-center gap-[12px] text-left px-[12px] py-[12px] min-h-[48px] border rounded-[4px] transition-colors ${
+              className={`w-full flex items-center gap-[12px] text-left px-[12px] py-[12px] min-h-[48px] border rounded-[4px] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] ${
                 isSelected
                   ? "bg-[var(--card)] border-[var(--primary)] shadow-[inset_0_0_0_1px_var(--primary)]"
                   : "bg-[var(--card)] border-[var(--rule)] hover:border-[var(--ink-soft)]"
@@ -49,7 +49,7 @@ export default function QuestionCard({ question, selectedIndex, onSelect }) {
               >
                 {LETTERS[idx]}
               </div>
-              <span className="text-[16px] text-[var(--ink)] leading-[1.6]">{option}</span>
+              <span style={{ fontFamily: "var(--font-ibm-plex-sans)" }} className="text-[16px] text-[var(--ink)] leading-[1.5]">{option}</span>
             </button>
           );
         })}
