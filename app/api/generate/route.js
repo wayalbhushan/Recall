@@ -10,7 +10,7 @@ export async function POST(request) {
     return NextResponse.json({ error: "BAD_REQUEST" }, { status: 400 });
   }
 
-  const { topic } = body;
+  const { topic, chaos } = body;
   if (typeof topic !== "string" || topic.trim().length < 3) {
     return NextResponse.json({ error: "TOPIC_TOO_SHORT" }, { status: 400 });
   }
@@ -22,6 +22,41 @@ export async function POST(request) {
 
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "MISSING_API_KEY" }, { status: 500 });
+  }
+
+  if (process.env.NODE_ENV !== "production" && typeof chaos === "string") {
+    if (chaos === "bad-json") {
+      return NextResponse.json({ raw: "{ title: 'Quiz', questions: [" }, { status: 200 });
+    }
+    if (chaos === "wrong-shape") {
+      const fake = { title: "Quiz", questions: [{ prompt: "Q1", options: ["a","b"], correctIndex: 9 }] };
+      return NextResponse.json({ raw: JSON.stringify(fake) }, { status: 200 });
+    }
+    if (chaos === "empty") {
+      const fake = { title: "Quiz", questions: [] };
+      return NextResponse.json({ raw: JSON.stringify(fake) }, { status: 200 });
+    }
+    if (chaos === "partial") {
+      const fake = { 
+        title: "Quiz", 
+        questions: [
+          { prompt: "Q1", options: ["a","b","c","d"], correctIndex: 0 },
+          { prompt: "Q2", options: ["e","f","g","h"], correctIndex: 1 },
+          { prompt: "Q3", options: ["i","j","k","l"], correctIndex: 2 },
+          { prompt: "Bad1", options: ["a","b","c"], correctIndex: 0 },
+          { prompt: "Bad2", options: ["m","n","o","p"], correctIndex: 9 }
+        ] 
+      };
+      return NextResponse.json({ raw: JSON.stringify(fake) }, { status: 200 });
+    }
+    if (chaos === "slow") {
+      await new Promise(resolve => setTimeout(resolve, 30000));
+      const fake = { title: "Slow Quiz", questions: [{ prompt: "Q1", options: ["a","b","c","d"], correctIndex: 0 }] };
+      return NextResponse.json({ raw: JSON.stringify(fake) }, { status: 200 });
+    }
+    if (chaos === "fail") {
+      return NextResponse.json({ error: "UPSTREAM_FAILED" }, { status: 502 });
+    }
   }
 
   try {
