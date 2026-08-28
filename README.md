@@ -5,10 +5,9 @@ Turn your notes into an active-recall test.
 Recall is a web application that generates custom multiple-choice quizzes from user-provided notes or topics. It is driven by a core active-recall loop: provide a topic, generate a quiz via the Groq API, and iteratively retest only the incorrect answers until a perfect score is achieved. This project was built as a take-home software engineering assignment, demonstrating rigorous state management, API proxying, and extensive error handling for unpredictable LLM outputs.
 
 ## Demo
-[ADD DEMO VIDEO LINK HERE]
+[Watch Demo Video](https://youtu.be/zxvYLdLumdM)
 
 ### Screenshots
-![Setup screen](./screenshots/setup.png)
 ![Controls expanded](./screenshots/controls.png)
 ![Ready screen](./screenshots/ready.png)
 ![Active quiz question](./screenshots/quiz.png)
