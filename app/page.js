@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useQuiz from "@/hooks/useQuiz";
 import TopicInput from "@/components/TopicInput";
 import { EmptyIdle, LoadingSkeleton, ErrorView, EmptyResult } from "@/components/StateViews";
@@ -19,6 +19,10 @@ export default function Page() {
   } else if (status === "idle" || status === "loading" || status === "error" || status === "empty") {
     screen = "setup";
   }
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, [screen]);
 
   const handleGenerate = (controls) => {
     setSettings(controls);
