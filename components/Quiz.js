@@ -52,7 +52,7 @@ export default function Quiz({ quiz, reset }) {
   const isLast = currentIndex === totalActive - 1;
 
   return (
-    <div className="flex flex-col gap-[32px] p-[24px] bg-[var(--card)] border border-[var(--rule)] rounded-[4px]">
+    <div className="flex flex-col gap-[32px] p-[24px] min-h-[400px] bg-[var(--card)] border border-[var(--rule)] rounded-[4px]">
       <div className="flex justify-between items-center border-b border-[var(--rule)] pb-[16px]">
         <h3 className="text-[20px] text-[var(--ink)] font-semibold" style={{ fontFamily: "var(--font-ibm-plex-serif)" }}>
           {quiz.title}
@@ -62,17 +62,19 @@ export default function Quiz({ quiz, reset }) {
         </span>
       </div>
 
-      <QuestionCard 
-        question={activeQuestion} 
-        selectedIndex={selectedIndex} 
-        onSelect={handleSelect} 
-      />
+      <div key={activeQuestionId} className="animate-question-enter flex-1">
+        <QuestionCard 
+          question={activeQuestion} 
+          selectedIndex={selectedIndex} 
+          onSelect={handleSelect} 
+        />
+      </div>
 
-      <div className="flex justify-end pt-[16px]">
+      <div className="flex justify-end pt-[16px] mt-auto">
         <button
           onClick={handleNext}
           disabled={selectedIndex === undefined}
-          className="px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+          className="px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLast ? "Submit" : "Next"}
         </button>

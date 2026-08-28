@@ -25,7 +25,7 @@ export default function QuestionCard({ question, selectedIndex, onSelect }) {
       >
         {question.prompt}
       </h2>
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[8px]">
         {question.options.map((option, idx) => {
           const isSelected = selectedIndex === idx;
           return (
@@ -33,17 +33,17 @@ export default function QuestionCard({ question, selectedIndex, onSelect }) {
               key={idx}
               onClick={() => onSelect(idx)}
               aria-pressed={isSelected}
-              className={`group flex items-center gap-[12px] w-full p-[16px] text-left border rounded-[4px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] transition-colors ${
+              className={`w-full flex items-center gap-[12px] text-left px-[12px] py-[12px] min-h-[48px] border rounded-[4px] transition-colors ${
                 isSelected
-                  ? "border-[var(--primary)] bg-[var(--card)]"
-                  : "border-[var(--rule)] bg-[var(--card)] hover:border-[var(--ink-soft)]"
+                  ? "bg-[var(--card)] border-[var(--primary)] shadow-[inset_0_0_0_1px_var(--primary)]"
+                  : "bg-[var(--card)] border-[var(--rule)] hover:border-[var(--ink-soft)]"
               }`}
             >
               <div 
                 style={{ fontFamily: "var(--font-ibm-plex-mono)" }}
                 className={`flex shrink-0 items-center justify-center w-[24px] h-[24px] rounded-[50%] text-[12px] font-medium transition-colors ${
                   isSelected 
-                    ? "bg-[var(--primary)] text-[var(--card)] border border-[var(--primary)]" 
+                    ? "bg-[var(--primary)] text-[var(--card)]" 
                     : "bg-[var(--card)] text-[var(--ink-soft)] border border-[var(--rule)]"
                 }`}
               >
