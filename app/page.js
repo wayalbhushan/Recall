@@ -79,7 +79,7 @@ export default function Page() {
                 
                 {status === "idle" && <EmptyIdle />}
                 {status === "loading" && <LoadingSkeleton />}
-                {status === "error" && <ErrorView code={errorCode} onRetry={() => generate(topic, settings)} />}
+                {status === "error" && <ErrorView code={errorCode} onRetry={() => generate(topic, settings)} onClose={reset} />}
                 {status === "empty" && <EmptyResult onRetry={handleReset} />}
               </div>
             )}
