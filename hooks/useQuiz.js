@@ -8,10 +8,12 @@ export default function useQuiz() {
   const [quiz, setQuiz] = useState(null);
   const [errorCode, setErrorCode] = useState(null);
   const [droppedCount, setDroppedCount] = useState(0);
+  const [shortfall, setShortfall] = useState(0);
   const [requestedCount, setRequestedCount] = useState(5);
 
   const requestId = useRef(0);
   const controller = useRef(null);
+  const timedOutRef = useRef(false);
 
   const reset = () => {
     requestId.current += 1;
@@ -23,16 +25,19 @@ export default function useQuiz() {
     setQuiz(null);
     setErrorCode(null);
     setDroppedCount(0);
+    setShortfall(0);
     setRequestedCount(5);
   };
 
   const generate = async (topic, options = { count: 5, difficulty: "medium", style: "mixed", instructions: "" }, chaos = undefined) => {
+    timedOutRef.current = false;
     requestId.current += 1;
     const myId = requestId.current;
 
     setStatus("loading");
     setErrorCode(null);
     setDroppedCount(0);
+    setShortfall(0);
     setQuiz(null);
     setRequestedCount(options.count);
 
@@ -51,6 +56,7 @@ export default function useQuiz() {
 
         try {
           timeoutId = setTimeout(() => {
+            timedOutRef.current = true;
             if (controller.current) controller.current.abort();
           }, 25000);
 
@@ -123,12 +129,17 @@ export default function useQuiz() {
 
           setQuiz({ title: result.title, questions: result.questions });
           setDroppedCount(result.droppedCount);
+          setShortfall(result.shortfall ?? 0);
           setStatus("ready");
           return;
 
         } catch (error) {
           if (myId !== requestId.current) return;
           if (error.name === "AbortError") {
+            if (timedOutRef.current) {
+              setErrorCode("TIMEOUT");
+              setStatus("error");
+            }
             return;
           }
           setErrorCode("NETWORK_ERROR");
@@ -143,5 +154,5 @@ export default function useQuiz() {
     performRequest();
   };
 
-  return { status, quiz, errorCode, droppedCount, requestedCount, generate, reset };
+  return { status, quiz, errorCode, droppedCount, shortfall, requestedCount, generate, reset };
 }

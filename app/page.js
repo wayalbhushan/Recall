@@ -8,7 +8,7 @@ import Quiz from "@/components/Quiz";
 import ReadyScreen from "@/components/ReadyScreen";
 
 export default function Page() {
-  const { status, quiz, errorCode, droppedCount, requestedCount, generate, reset } = useQuiz();
+  const { status, quiz, errorCode, droppedCount, shortfall, requestedCount, generate, reset } = useQuiz();
   const [topic, setTopic] = useState("");
   const [settings, setSettings] = useState(null);
   const [activeScreen, setActiveScreen] = useState("setup");
@@ -86,7 +86,7 @@ export default function Page() {
 
             {screen === "ready" && (
               <ReadyScreen 
-                quiz={{ ...quiz, droppedCount, shortfall: quiz?.shortfall || 0 }} 
+                quiz={{ ...quiz, droppedCount, shortfall }} 
                 settings={settings} 
                 requestedCount={requestedCount} 
                 onStart={() => setActiveScreen("quiz")} 

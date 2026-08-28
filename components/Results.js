@@ -1,7 +1,5 @@
 "use client";
 
-const LETTERS = ["A", "B", "C", "D"];
-
 export default function Results({ quiz, answers, onRetest, onReset }) {
   const { title, questions } = quiz;
   const wrongIds = [];

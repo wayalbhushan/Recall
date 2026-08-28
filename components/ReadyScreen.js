@@ -20,8 +20,9 @@ export default function ReadyScreen({ quiz, settings, requestedCount, onStart, o
       <div className="flex flex-col gap-[16px] items-center w-full max-w-[320px]">
         {(quiz.droppedCount > 0 || quiz.shortfall > 0) && (
           <p style={{ fontFamily: "var(--font-ibm-plex-mono)" }} className="text-[12px] text-[var(--ink-soft)] w-full text-center">
-            {quiz.shortfall > 0 && `You asked for ${requestedCount} questions; ${quiz.questions.length} were usable. `}
             {quiz.droppedCount > 0 && `${quiz.droppedCount} ${quiz.droppedCount === 1 ? "question was" : "questions were"} dropped because the model returned ${quiz.droppedCount === 1 ? "it" : "them"} incomplete.`}
+            {quiz.droppedCount > 0 && quiz.shortfall > 0 && " "}
+            {quiz.shortfall > 0 && `You asked for ${requestedCount} questions; ${quiz.questions.length} were usable.`}
           </p>
         )}
 

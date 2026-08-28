@@ -46,9 +46,10 @@ export function ErrorView({ code, onRetry, onClose }) {
   if (code === "BAD_MODEL_OUTPUT") message = "The model returned unreadable data.";
   if (code === "UPSTREAM_FAILED") message = "The model service did not respond.";
   if (code === "NETWORK_ERROR") message = "The request could not reach the server.";
+  if (code === "TIMEOUT") message = "The request took too long and was cancelled.";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-[16px] bg-[rgba(26,29,36,0.3)] backdrop-blur-sm animate-screen-enter">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-[16px] bg-[rgba(26,29,36,0.3)] animate-screen-enter">
       <div className="flex flex-col p-[24px] border border-[var(--rule)] border-l-[4px] border-l-[var(--mark)] rounded-[4px] bg-[var(--card)] shadow-[0_4px_12px_rgba(26,29,36,0.15)] sm:min-w-[360px] max-w-[400px] w-full">
         <div className="flex justify-between items-start gap-[16px]">
           <p className="text-[16px] text-[var(--ink)] leading-[1.6] mt-[2px]">{message}</p>
