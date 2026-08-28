@@ -4,6 +4,7 @@ import { useState } from "react";
 import useQuiz from "@/hooks/useQuiz";
 import TopicInput from "@/components/TopicInput";
 import { EmptyIdle, LoadingSkeleton, ErrorView, EmptyResult } from "@/components/StateViews";
+import Quiz from "@/components/Quiz";
 
 export default function Page() {
   const { status, quiz, errorCode, droppedCount, generate, reset } = useQuiz();
@@ -70,9 +71,7 @@ export default function Page() {
                   {droppedCount} {droppedCount === 1 ? "question was" : "questions were"} dropped because the model returned {droppedCount === 1 ? "it" : "them"} incomplete.
                 </p>
               )}
-              <div className="p-[24px] bg-[var(--card)] border border-[var(--rule)] rounded-[4px]">
-                <p className="text-[var(--ink)] text-[16px]">Quiz ready</p>
-              </div>
+              <Quiz quiz={quiz} reset={handleReset} />
             </div>
           )}
         </main>
