@@ -210,5 +210,19 @@ export default function useQuiz() {
     }
   };
 
-  return { status, quiz, errorCode, droppedCount, shortfall, requestedCount, mode, generate, reset, refine, isRefining };
+  const loadSessionData = (savedQuiz, options) => {
+    if (controller.current) {
+      controller.current.abort();
+      controller.current = null;
+    }
+    setQuiz(savedQuiz);
+    setRequestedCount(options?.count || 5);
+    setMode(options?.mode || "quiz");
+    setDroppedCount(0);
+    setShortfall(0);
+    setErrorCode(null);
+    setStatus("ready");
+  };
+
+  return { status, quiz, errorCode, droppedCount, shortfall, requestedCount, mode, generate, reset, refine, isRefining, loadSessionData };
 }

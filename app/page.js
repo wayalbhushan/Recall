@@ -13,7 +13,7 @@ import SessionDrawer from "@/components/SessionDrawer";
 import RefinementInput from "@/components/RefinementInput";
 
 export default function Page() {
-  const { status, quiz, errorCode, droppedCount, shortfall, requestedCount, mode, generate, reset, refine, isRefining } = useQuiz();
+  const { status, quiz, errorCode, droppedCount, shortfall, requestedCount, mode, generate, reset, refine, isRefining, loadSessionData } = useQuiz();
   const { sessions, saveSession, deleteSession } = useSessions();
   const [topic, setTopic] = useState("");
   const [settings, setSettings] = useState(null);
@@ -52,11 +52,8 @@ export default function Page() {
   const handleLoadSession = (session) => {
     setTopic(session.topic);
     setSettings(session.settings);
-    reset();
-    // Directly hydrate the quiz state via generate with preloaded data
-    // We use a workaround: set topic and let user regenerate, OR
-    // for a better UX, navigate to ready screen with saved quiz
-    // We'll store quiz externally and jump to ready via a separate flag
+    loadSessionData(session.quiz, session.settings);
+    setActiveScreen("ready");
   };
 
   const isQuizScreen = screen === "quiz";
@@ -116,10 +113,7 @@ export default function Page() {
                 {status === "idle" && (
                   <SessionDrawer
                     sessions={sessions}
-                    onLoad={(s) => {
-                      setTopic(s.topic);
-                      setSettings(s.settings);
-                    }}
+                    onLoad={handleLoadSession}
                     onDelete={deleteSession}
                   />
                 )}
