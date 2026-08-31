@@ -2,7 +2,7 @@
 Turn your notes into an active-recall test.
 
 ## Overview
-Recall is a web application that generates custom multiple-choice quizzes from user-provided notes or topics. It is driven by a core active-recall loop: provide a topic, generate a quiz via the Groq API, and iteratively retest only the incorrect answers until a perfect score is achieved. This project was built as a take-home software engineering assignment, demonstrating rigorous state management, API proxying, and extensive error handling for unpredictable LLM outputs.
+Recall is a web application that generates custom multiple-choice quizzes and flashcards from user-provided notes or topics. It is driven by a core active-recall loop: provide a topic, generate a quiz or flashcard deck via the Groq API, and iteratively retest only the incorrect answers until a perfect score is achieved. This project was built as a take-home software engineering assignment, demonstrating rigorous state management, API proxying, and extensive error handling for unpredictable LLM outputs.
 
 ## Demo
 [Watch Demo Video](https://youtu.be/zxvYLdLumdM)
@@ -60,8 +60,15 @@ Handling unpredictable LLM output is a primary focus of this architecture. The a
 * **Wrong-shaped JSON**: A valid JSON object that fails domain constraints (e.g., missing fields, 5 options instead of 4, invalid `correctIndex`). The validator drops only the specific invalid questions. The valid ones are kept, and the `droppedCount` is actively surfaced to the user on the Ready screen.
 * **Fewer valid questions than requested**: If the model provides a valid array but falls short of the requested count, the exact numerical `shortfall` is computed and displayed alongside any dropped questions.
 * **Zero valid questions**: If the validator strips all questions (or none were provided), the app enters a distinct `empty` state, routing to a dedicated UI component rather than a generic error crash.
-* **Slow/hanging responses**: A hardcoded 25-second timeout forcefully aborts the request. *(Note: During testing, a bug was found where the app hung indefinitely because the timeout abort was caught and silently discarded like a superseded request. This was successfully patched by introducing a `timedOutRef` flag to route to a distinct `TIMEOUT` error.)*
+* **Slow/hanging responses**: A hardcoded 25-second timeout forcefully aborts the request.
 * **Upstream/network failures**: The client distinguishes between a failure to reach the proxy (`NETWORK_ERROR`, e.g., offline) and the proxy failing to reach the LLM provider (`UPSTREAM_FAILED`, e.g., 502 Bad Gateway), displaying accurate, specific text for each.
+
+## Stretch Goals Completed
+* **Different block types**: Built a "both" mode that queries the AI for flashcards and quiz questions in the same payload, parses both structures, and presents a dynamic UI allowing the user to seamlessly switch between the two different block types.
+* **Refinement loop**: Implemented a "Refine" feature on the Ready screen that accepts follow-up prompts to modify the existing generated output instead of a total regeneration.
+* **Save and reload sessions**: Implemented local storage persistence allowing users to save their generated sessions and reload them across browser reloads via a sidebar.
+* **Polish**: Added full keyboard navigation for quizzes and flashcards, dark mode (via `next-themes`), and CSS micro-animations for interactive loading screens and button interactions.
+*(Note: Streaming JSON was purposefully skipped to prioritize a rock-solid error recovery foundation within the time limit. Structured JSON streaming is exceptionally brittle compared to partial-salvage parsing.)*
 
 ## Limitations
 
@@ -70,7 +77,13 @@ Handling unpredictable LLM output is a primary focus of this architecture. The a
 * Because of how `localhost` network routing works in Chromium, testing the `NETWORK_ERROR` state by toggling "Offline" mode in browser DevTools is insufficient. The proper testing methodology requires explicitly blocking the `/api/generate` Request URL in the DevTools Network tab.
 
 ## AI usage
-This project was built with AI coding assistance (Google Antigravity). All architectural decisions, state management patterns, error handling strategies, and design system constraints were decided upfront and documented via hand-written specifications. The generated code was thoroughly reviewed, understood, and manually tested to ensure it met the architectural requirements, rather than being accepted blindly.
+This project was built with AI coding assistance. All architectural decisions, state management patterns, error handling strategies, and design system constraints were decided upfront and guided via hand-written specifications. The generated code was thoroughly reviewed, understood, and manually tested to ensure it met the architectural requirements, rather than being accepted blindly.
+
+## Time spent
+- ~2 hours: Architecture planning, UI design, state machine design, and initial scaffolding.
+- ~4 hours: Core implementation (API proxy, robust validation logic, React state orchestration).
+- ~2 hours: Stretch goals (Both mode/block types, Refinement loop, Local storage, Dark mode, Animation polish).
+Total actual work: ~8 hours.
 
 ## Testing
 The application underwent rigorous verification, including:
