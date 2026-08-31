@@ -31,13 +31,13 @@ export default function ReadyScreen({ quiz, settings, requestedCount, mode, onSt
             <>
               <button
                 onClick={() => onStart("flashcards")}
-                className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+                className="w-full sm:w-auto px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform"
               >
                 Study flashcards
               </button>
               <button
                 onClick={() => onStart("quiz")}
-                className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+                className="w-full sm:w-auto px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform"
               >
                 Take quiz
               </button>
@@ -45,14 +45,14 @@ export default function ReadyScreen({ quiz, settings, requestedCount, mode, onSt
           ) : (
             <button
               onClick={() => onStart(mode)}
-              className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+              className="w-full sm:w-auto px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform"
             >
               Start {mode === "flashcards" ? "flashcards" : "quiz"}
             </button>
           )}
           <button
             onClick={onReset}
-            className="w-full sm:w-auto px-[24px] py-[12px] bg-transparent text-[var(--ink-soft)] hover:text-[var(--ink)] rounded-[4px] text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+            className="w-full sm:w-auto px-[32px] py-[12px] bg-transparent text-[var(--ink-soft)] hover:text-[var(--ink)] rounded-[4px] text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--primary)] hover:scale-[1.02] transition-transform"
           >
             Change topic
           </button>

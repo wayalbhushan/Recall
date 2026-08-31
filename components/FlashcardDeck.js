@@ -132,17 +132,26 @@ export default function FlashcardDeck({ deck, reset, mode }) {
           >
             Previous
           </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            className={`px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform ${currentIndex === total - 1 ? "invisible" : ""}`}
-          >
-            Next
-          </button>
+          {currentIndex === total - 1 ? (
+            <button
+              type="button"
+              onClick={reset}
+              className="px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform"
+            >
+              {mode === "both" ? "Done" : "New topic"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform"
+            >
+              Next
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Done / reset */}
       <div className="flex flex-col items-center gap-[8px] pt-[8px] border-t border-[var(--rule)]">
         <p
           style={{ fontFamily: "var(--font-ibm-plex-mono)" }}
@@ -150,13 +159,6 @@ export default function FlashcardDeck({ deck, reset, mode }) {
         >
           {currentIndex === total - 1 ? "End of deck — all cards reviewed." : "Space or tap a card to flip it."}
         </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="text-[14px] text-[var(--ink-soft)] hover:text-[var(--ink)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[4px] px-[8px] py-[4px]"
-        >
-          {mode === "both" ? "Done" : "New topic"}
-        </button>
       </div>
     </div>
   );

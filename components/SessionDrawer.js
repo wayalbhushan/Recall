@@ -34,7 +34,7 @@ export default function SessionDrawer({ sessions, onLoad, onDelete }) {
               <button
                 type="button"
                 onClick={() => onLoad(s)}
-                className="text-[13px] text-[var(--primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[2px] px-[4px]"
+                className="px-[16px] py-[8px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[13px] font-medium shadow-sm hover:scale-[1.02] transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)]"
               >
                 Load
               </button>
@@ -42,7 +42,7 @@ export default function SessionDrawer({ sessions, onLoad, onDelete }) {
                 type="button"
                 onClick={() => onDelete(s.id)}
                 aria-label="Delete session"
-                className="text-[13px] text-[var(--ink-soft)] hover:text-[var(--mark)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[2px] px-[4px]"
+                className="flex items-center justify-center w-[32px] h-[32px] bg-[var(--card)] border border-[var(--rule)] text-[18px] text-[var(--ink-soft)] hover:text-[var(--mark)] hover:border-[var(--mark)] hover:bg-[var(--paper)] rounded-[4px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] shadow-sm"
               >
                 &times;
               </button>

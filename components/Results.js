@@ -82,10 +82,10 @@ export default function Results({ quiz, answers, onRetest, onReset, mode }) {
         )}
         <button
           onClick={onReset}
-          className={`px-[24px] py-[12px] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] ${
+          className={`ml-auto px-[24px] py-[12px] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform ${
             allCorrect 
               ? "bg-[var(--primary)] text-[var(--card)]" 
-              : "border border-[var(--rule)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--ink-soft)]"
+              : "border border-[var(--rule)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--ink-soft)] hover:bg-[var(--paper)]"
           }`}
         >
           {mode === "both" ? "Done" : "New topic"}

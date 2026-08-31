@@ -40,7 +40,7 @@ export default function RefinementInput({ onRefine, isLoading }) {
         <button
           type="submit"
           disabled={!isValid || isLoading}
-          className="px-[16px] py-[8px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[14px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] shrink-0"
+          className="px-[24px] py-[8px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[14px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] shrink-0 shadow-sm hover:scale-[1.02] transition-transform"
         >
           {isLoading ? "Refining…" : "Refine"}
         </button>
