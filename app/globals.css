@@ -11,6 +11,17 @@
   --correct: #2F6B4E;
 }
 
+[data-theme="dark"] {
+  --paper: #111318;
+  --card: #1C1F27;
+  --ink: #E8E6DF;
+  --ink-soft: #8A929F;
+  --rule: #2D3240;
+  --primary: #4A6FA5;
+  --mark: #D94F45;
+  --correct: #3D8B62;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { validateQuiz } from "@/lib/validate";
+import { validateQuiz, validateFlashcards } from "@/lib/validate";
 
 export default function useQuiz() {
   const [status, setStatus] = useState("idle");
@@ -10,6 +10,8 @@ export default function useQuiz() {
   const [droppedCount, setDroppedCount] = useState(0);
   const [shortfall, setShortfall] = useState(0);
   const [requestedCount, setRequestedCount] = useState(5);
+  const [isRefining, setIsRefining] = useState(false);
+  const [mode, setMode] = useState("quiz");
 
   const requestId = useRef(0);
   const controller = useRef(null);
@@ -27,6 +29,7 @@ export default function useQuiz() {
     setDroppedCount(0);
     setShortfall(0);
     setRequestedCount(5);
+    setMode("quiz");
   };
 
   const generate = async (topic, options = { count: 5, difficulty: "medium", style: "mixed", instructions: "" }, chaos = undefined) => {
@@ -40,6 +43,7 @@ export default function useQuiz() {
     setShortfall(0);
     setQuiz(null);
     setRequestedCount(options.count);
+    setMode(options.mode || "quiz");
 
     const performRequest = async () => {
       let isRetry = false;
@@ -65,7 +69,8 @@ export default function useQuiz() {
             count: options.count,
             difficulty: options.difficulty,
             style: options.style,
-            instructions: options.instructions
+            instructions: options.instructions,
+            mode: options.mode || "quiz"
           };
           if (chaos !== undefined) body.chaos = chaos;
           if (isRetry) body.repair = true;
@@ -112,24 +117,29 @@ export default function useQuiz() {
             return;
           }
 
-          const result = validateQuiz(parsedData, options.count);
-          if (!result.ok) {
-            if (result.reason === "NO_VALID_QUESTIONS") {
-              setStatus("empty");
-              return;
+          const currentMode = options.mode || "quiz";
+          let result;
+          if (currentMode === "flashcards") {
+            result = validateFlashcards(parsedData);
+            if (!result.ok) {
+              if (result.reason === "NO_VALID_CARDS") { setStatus("empty"); return; }
+              if (!isRetry) { isRetry = true; continue; }
+              setErrorCode("BAD_MODEL_OUTPUT"); setStatus("error"); return;
             }
-            if (!isRetry) {
-              isRetry = true;
-              continue;
+            setQuiz({ title: result.title, cards: result.cards });
+            setDroppedCount(result.droppedCount);
+            setShortfall(0);
+          } else {
+            result = validateQuiz(parsedData, options.count);
+            if (!result.ok) {
+              if (result.reason === "NO_VALID_QUESTIONS") { setStatus("empty"); return; }
+              if (!isRetry) { isRetry = true; continue; }
+              setErrorCode("BAD_MODEL_OUTPUT"); setStatus("error"); return;
             }
-            setErrorCode("BAD_MODEL_OUTPUT");
-            setStatus("error");
-            return;
+            setQuiz({ title: result.title, questions: result.questions });
+            setDroppedCount(result.droppedCount);
+            setShortfall(result.shortfall ?? 0);
           }
-
-          setQuiz({ title: result.title, questions: result.questions });
-          setDroppedCount(result.droppedCount);
-          setShortfall(result.shortfall ?? 0);
           setStatus("ready");
           return;
 
@@ -154,5 +164,51 @@ export default function useQuiz() {
     performRequest();
   };
 
-  return { status, quiz, errorCode, droppedCount, shortfall, requestedCount, generate, reset };
+  const refine = async (instruction) => {
+    if (!quiz || isRefining) return;
+    setIsRefining(true);
+    setErrorCode(null);
+    try {
+      const res = await fetch("/api/refine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentQuiz: quiz,
+          instruction,
+          count: requestedCount,
+          difficulty: "medium",
+          style: "mixed",
+          mode,
+        }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        setErrorCode(j.error || "UNKNOWN_ERROR");
+        return;
+      }
+      const json = await res.json();
+      let parsedData = null;
+      try { parsedData = JSON.parse(json.raw); } catch {}
+      if (!parsedData) { setErrorCode("BAD_MODEL_OUTPUT"); return; }
+
+      if (mode === "flashcards") {
+        const result = validateFlashcards(parsedData);
+        if (!result.ok) { setErrorCode("BAD_MODEL_OUTPUT"); return; }
+        setQuiz({ title: result.title, cards: result.cards });
+        setDroppedCount(result.droppedCount);
+      } else {
+        const result = validateQuiz(parsedData, requestedCount);
+        if (!result.ok) { setErrorCode("BAD_MODEL_OUTPUT"); return; }
+        setQuiz({ title: result.title, questions: result.questions });
+        setDroppedCount(result.droppedCount);
+        setShortfall(result.shortfall ?? 0);
+      }
+    } catch {
+      setErrorCode("NETWORK_ERROR");
+    } finally {
+      setIsRefining(false);
+    }
+  };
+
+  return { status, quiz, errorCode, droppedCount, shortfall, requestedCount, mode, generate, reset, refine, isRefining };
 }

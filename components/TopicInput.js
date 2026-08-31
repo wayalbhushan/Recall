@@ -4,7 +4,7 @@ import { useState } from "react";
 import GenerationControls from "./GenerationControls";
 
 export default function TopicInput({ topic, setTopic, status, onGenerate, onReset }) {
-  const [controls, setControls] = useState({ count: 5, difficulty: "medium", style: "mixed", instructions: "" });
+  const [controls, setControls] = useState({ mode: "quiz", count: 5, difficulty: "medium", style: "mixed", instructions: "" });
   const trimmed = topic.trim();
   const isValid = trimmed.length >= 3;
   const isLoading = status === "loading";
@@ -63,7 +63,7 @@ export default function TopicInput({ topic, setTopic, status, onGenerate, onRese
             disabled={!isValid || isLoading}
             className="px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
           >
-            {isLoading ? "Generating" : "Generate quiz"}
+            {isLoading ? "Generating" : controls.mode === "flashcards" ? "Generate flashcards" : "Generate quiz"}
           </button>
         </div>
       </div>

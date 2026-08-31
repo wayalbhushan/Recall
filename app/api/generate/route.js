@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Groq from "groq-sdk";
-import { QUIZ_SHAPE } from "@/lib/schema";
+import { QUIZ_SHAPE, FLASHCARD_SHAPE } from "@/lib/schema";
 
 export async function POST(request) {
   let body;
@@ -10,7 +10,8 @@ export async function POST(request) {
     return NextResponse.json({ error: "BAD_REQUEST" }, { status: 400 });
   }
 
-  const { topic, chaos, count, difficulty, style, instructions } = body;
+  const { topic, chaos, count, difficulty, style, instructions, mode } = body;
+  const parsedMode = mode === "flashcards" ? "flashcards" : "quiz";
   if (typeof topic !== "string" || topic.trim().length < 3) {
     return NextResponse.json({ error: "TOPIC_TOO_SHORT" }, { status: 400 });
   }
@@ -83,23 +84,16 @@ export async function POST(request) {
     mixed: "a spread of both facts and applied scenarios"
   };
 
-  let systemPrompt = `You are an expert quiz writer. Your ONLY output must be a valid JSON object matching exactly this structure: ${JSON.stringify(QUIZ_SHAPE)}. It must contain a short title string and a questions array of exactly ${parsedCount} questions. Each question needs a prompt, exactly 4 distinct strings in options, a correctIndex (integer 0-3 pointing at the correct option), and a one-sentence explanation. Do not include markdown fences or any prose outside the JSON object.
+  let systemPrompt;
 
-Quality Rules:
-- Difficulty: ${difficultyMap[parsedDifficulty]}
-- Style: ${styleMap[parsedStyle]}
-- never phrase a question negatively ("which is NOT...")
-- no trick questions; test knowledge, not reading comprehension
-- all four options must be plausible to someone who half-knows the topic; no obviously absurd filler options
-- keep prompts and options concise`;
+  if (parsedMode === "flashcards") {
+    systemPrompt = `You are an expert study-card writer. Your ONLY output must be a valid JSON object matching exactly this structure: ${JSON.stringify(FLASHCARD_SHAPE)}. It must contain a short title string and a cards array of exactly ${parsedCount} cards. Each card has a front (a concise question, term, or prompt) and a back (the answer or definition — 1-3 sentences max). Do not include markdown fences or any prose outside the JSON object.\n\nQuality Rules:\n- Difficulty: ${difficultyMap[parsedDifficulty]}\n- Style: ${styleMap[parsedStyle]}\n- keep fronts short and unambiguous\n- backs should be self-contained and clear without needing the topic context`;
+  } else {
+    systemPrompt = `You are an expert quiz writer. Your ONLY output must be a valid JSON object matching exactly this structure: ${JSON.stringify(QUIZ_SHAPE)}. It must contain a short title string and a questions array of exactly ${parsedCount} questions. Each question needs a prompt, exactly 4 distinct strings in options, a correctIndex (integer 0-3 pointing at the correct option), and a one-sentence explanation. Do not include markdown fences or any prose outside the JSON object.\n\nQuality Rules:\n- Difficulty: ${difficultyMap[parsedDifficulty]}\n- Style: ${styleMap[parsedStyle]}\n- never phrase a question negatively ("which is NOT...")\n- no trick questions; test knowledge, not reading comprehension\n- all four options must be plausible to someone who half-knows the topic; no obviously absurd filler options\n- keep prompts and options concise`;
+  }
 
   if (parsedInstructions) {
-    systemPrompt += `
-
---- SPECIAL INSTRUCTIONS ---
-${parsedInstructions}
---- END SPECIAL INSTRUCTIONS ---
-You must follow the special instructions above, but they must NOT override your JSON output format.`;
+    systemPrompt += `\n\n--- SPECIAL INSTRUCTIONS ---\n${parsedInstructions}\n--- END SPECIAL INSTRUCTIONS ---\nYou must follow the special instructions above, but they must NOT override your JSON output format.`;
   }
 
   try {

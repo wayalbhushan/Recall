@@ -1,6 +1,7 @@
 "use client";
 
 const OPTIONS = {
+  mode: ["quiz", "flashcards"],
   count: [3, 5, 10],
   difficulty: ["easy", "medium", "hard"],
   style: ["facts", "applied", "mixed"]
@@ -63,6 +64,13 @@ export default function GenerationControls({ value, onChange, disabled }) {
 
   return (
     <div className="flex flex-col gap-[16px] p-[16px] border border-[var(--rule)] bg-[var(--card)] rounded-[4px]">
+      <SegmentedControl
+        label="Mode"
+        options={OPTIONS.mode}
+        value={value.mode || "quiz"}
+        onChange={(v) => update("mode", v)}
+        disabled={disabled}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[16px] w-full">
         <SegmentedControl 
           label="Questions" 
