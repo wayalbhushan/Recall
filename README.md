@@ -5,7 +5,8 @@ Turn your notes into an active-recall test.
 Recall is a web application that generates custom multiple-choice quizzes and flashcards from user-provided notes or topics. It is driven by a core active-recall loop: provide a topic, generate a quiz or flashcard deck via the Groq API, and iteratively retest only the incorrect answers until a perfect score is achieved. This project was built as a take-home software engineering assignment, demonstrating rigorous state management, API proxying, and extensive error handling for unpredictable LLM outputs.
 
 ## Demo
-[Watch Demo Video](https://youtu.be/zxvYLdLumdM)
+* **Live App**: [https://recall-henna-two.vercel.app/](https://recall-henna-two.vercel.app/)
+* **Video Walkthrough**: [Watch Demo Video](https://youtu.be/zxvYLdLumdM)
 
 ### Screenshots
 ![Controls expanded](./screenshots/controls.png)
