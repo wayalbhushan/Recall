@@ -33,23 +33,23 @@ export default function QuestionCard({ question, selectedIndex, onSelect }) {
               key={idx}
               onClick={() => onSelect(idx)}
               aria-pressed={isSelected}
-              className={`w-full flex items-center gap-[12px] text-left px-[12px] py-[12px] min-h-[48px] border rounded-[4px] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] ${
+              className={`w-full flex items-center gap-[16px] text-left px-[16px] py-[16px] min-h-[56px] border rounded-[8px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] ${
                 isSelected
-                  ? "bg-[var(--card)] border-[var(--primary)] shadow-[inset_0_0_0_1px_var(--primary)]"
-                  : "bg-[var(--card)] border-[var(--rule)] hover:border-[var(--ink-soft)]"
+                  ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--card)] shadow-md transform scale-[1.01]"
+                  : "bg-[var(--card)] border-[var(--rule)] text-[var(--ink)] hover:border-[var(--ink-soft)] hover:shadow-sm"
               }`}
             >
               <div 
                 style={{ fontFamily: "var(--font-ibm-plex-mono)" }}
-                className={`flex shrink-0 items-center justify-center w-[24px] h-[24px] rounded-[50%] text-[12px] font-medium transition-colors ${
+                className={`flex shrink-0 items-center justify-center w-[28px] h-[28px] rounded-[50%] text-[14px] font-medium transition-colors ${
                   isSelected 
-                    ? "bg-[var(--primary)] text-[var(--card)]" 
-                    : "bg-[var(--card)] text-[var(--ink-soft)] border border-[var(--rule)]"
+                    ? "bg-[var(--card)] text-[var(--primary)]" 
+                    : "bg-[var(--paper)] text-[var(--ink-soft)] border border-[var(--rule)]"
                 }`}
               >
                 {LETTERS[idx]}
               </div>
-              <span style={{ fontFamily: "var(--font-ibm-plex-sans)" }} className="text-[16px] text-[var(--ink)] leading-[1.5]">{option}</span>
+              <span style={{ fontFamily: "var(--font-ibm-plex-sans)" }} className={`text-[16px] leading-[1.5] ${isSelected ? "text-[var(--card)]" : "text-[var(--ink)]"}`}>{option}</span>
             </button>
           );
         })}

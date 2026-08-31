@@ -99,14 +99,14 @@ export default function Quiz({ quiz, reset, mode }) {
           <div className="mt-[24px] pt-[16px] border-t border-[var(--rule)] flex items-center justify-between">
             <button
               onClick={handlePrev}
-              className={`px-[16px] py-[8px] text-[16px] text-[var(--ink-soft)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--primary)] rounded-[4px] ${currentIndex === 0 ? "invisible" : ""}`}
+              className={`px-[24px] py-[12px] text-[16px] text-[var(--ink)] bg-[var(--card)] border border-[var(--rule)] hover:bg-[var(--paper)] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[4px] shadow-sm transition-colors ${currentIndex === 0 ? "invisible" : ""}`}
             >
               Previous
             </button>
             <button
               onClick={handleNext}
               disabled={selectedIndex === undefined}
-              className="px-[24px] py-[8px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+              className="px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform"
             >
               {isLast ? "See results" : "Next"}
             </button>

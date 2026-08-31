@@ -1,3 +1,6 @@
+"use client";
+import { useState, useEffect } from "react";
+
 export function EmptyIdle() {
   return (
     <div className="py-[48px] text-center">
@@ -11,28 +14,50 @@ export function EmptyIdle() {
 }
 
 export function LoadingSkeleton() {
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  const phrases = [
+    "Reading your topic...",
+    "Brewing some questions...",
+    "Writing flashcards...",
+    "Checking the answers...",
+    "Almost there..."
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIdx((prev) => (prev + 1) % phrases.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [phrases.length]);
+
   return (
-    <div className="flex flex-col gap-[24px] w-full">
+    <div className="flex flex-col gap-[24px] w-full items-center justify-center py-[64px]">
       <style>{`
-        @keyframes quiet-pulse {
-          0%, 100% { opacity: 0.7; }
-          50% { opacity: 0.4; }
+        @keyframes spin-slow {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
-        .animate-quiet-pulse {
-          animation: quiet-pulse 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        @keyframes pulse-ring {
+          0% { transform: scale(0.8); opacity: 0.5; }
+          50% { transform: scale(1.1); opacity: 0.2; }
+          100% { transform: scale(0.8); opacity: 0.5; }
         }
       `}</style>
-      {[1, 2, 3].map((i) => (
-        <div key={i} className="animate-quiet-pulse flex flex-col gap-[16px] p-[24px] border border-[var(--rule)] rounded-[4px] bg-[var(--card)]">
-          <div className="h-[24px] bg-[var(--rule)] rounded-[4px] w-3/4 mb-[8px]"></div>
-          {[1, 2, 3, 4].map((j) => (
-            <div key={j} className="flex items-center gap-[12px]">
-              <div className="w-[24px] h-[24px] shrink-0 border border-[var(--rule)] bg-[var(--rule)]" style={{ borderRadius: '50%' }}></div>
-              <div className="h-[20px] bg-[var(--rule)] rounded-[4px] w-1/2"></div>
-            </div>
-          ))}
-        </div>
-      ))}
+      
+      <div className="relative flex items-center justify-center w-[80px] h-[80px]">
+        <div className="absolute inset-0 rounded-full border-[4px] border-[var(--rule)]" style={{ animation: 'pulse-ring 2s ease-in-out infinite' }}></div>
+        <div className="absolute inset-0 rounded-full border-[4px] border-t-[var(--primary)] border-r-transparent border-b-transparent border-l-transparent" style={{ animation: 'spin-slow 1s linear infinite' }}></div>
+      </div>
+
+      <div className="h-[24px] overflow-hidden">
+        <p 
+          style={{ fontFamily: "var(--font-ibm-plex-mono)" }} 
+          className="text-[14px] uppercase text-[var(--ink)] tracking-wider transition-all duration-300 transform translate-y-0 text-center"
+          key={phraseIdx}
+        >
+          {phrases[phraseIdx]}
+        </p>
+      </div>
     </div>
   );
 }

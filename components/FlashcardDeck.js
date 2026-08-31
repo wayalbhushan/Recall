@@ -128,14 +128,14 @@ export default function FlashcardDeck({ deck, reset, mode }) {
           <button
             type="button"
             onClick={handlePrev}
-            className={`px-[16px] py-[8px] text-[16px] text-[var(--ink-soft)] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[4px] ${currentIndex === 0 ? "invisible" : ""}`}
+            className={`px-[24px] py-[12px] text-[16px] text-[var(--ink)] bg-[var(--card)] border border-[var(--rule)] hover:bg-[var(--paper)] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[4px] shadow-sm transition-colors ${currentIndex === 0 ? "invisible" : ""}`}
           >
             Previous
           </button>
           <button
             type="button"
             onClick={handleNext}
-            className={`px-[24px] py-[8px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] ${currentIndex === total - 1 ? "invisible" : ""}`}
+            className={`px-[32px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] shadow-sm hover:scale-[1.02] transition-transform ${currentIndex === total - 1 ? "invisible" : ""}`}
           >
             Next
           </button>
