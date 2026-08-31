@@ -21,7 +21,7 @@ export default function Page() {
 
   let screen = "setup";
   if (status === "ready") {
-    screen = activeScreen === "quiz" ? "quiz" : "ready";
+    screen = activeScreen === "quiz" || activeScreen === "flashcards" ? activeScreen : "ready";
   } else if (status === "idle" || status === "loading" || status === "error" || status === "empty") {
     screen = "setup";
   }
@@ -47,6 +47,14 @@ export default function Page() {
     setTopic("");
     setActiveScreen("setup");
     reset();
+  };
+
+  const handleDone = () => {
+    if (mode === "both") {
+      setActiveScreen("ready");
+    } else {
+      handleReset();
+    }
   };
 
   const handleLoadSession = (session) => {
@@ -126,7 +134,8 @@ export default function Page() {
                   quiz={{ ...quiz, droppedCount, shortfall }} 
                   settings={settings} 
                   requestedCount={requestedCount} 
-                  onStart={() => setActiveScreen("quiz")} 
+                  mode={mode}
+                  onStart={(activity) => setActiveScreen(activity)} 
                   onReset={handleReset} 
                 />
                 <RefinementInput onRefine={refine} isLoading={isRefining} />
@@ -134,9 +143,11 @@ export default function Page() {
             )}
 
             {screen === "quiz" && (
-              isFlashcards
-                ? <FlashcardDeck deck={quiz} reset={handleReset} />
-                : <Quiz quiz={quiz} reset={handleReset} />
+              <Quiz quiz={quiz} reset={handleDone} mode={mode} />
+            )}
+            
+            {screen === "flashcards" && (
+              <FlashcardDeck deck={quiz} reset={handleDone} mode={mode} />
             )}
           </div>
         </main>

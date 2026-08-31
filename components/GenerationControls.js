@@ -1,7 +1,7 @@
 "use client";
 
 const OPTIONS = {
-  mode: ["quiz", "flashcards"],
+  mode: ["quiz", "flashcards", "both"],
   count: [3, 5, 10],
   difficulty: ["easy", "medium", "hard"],
   style: ["facts", "applied", "mixed"]

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { validateQuiz, validateFlashcards } from "@/lib/validate";
+import { validateQuiz, validateFlashcards, validateCombined } from "@/lib/validate";
 
 export default function useQuiz() {
   const [status, setStatus] = useState("idle");
@@ -119,7 +119,17 @@ export default function useQuiz() {
 
           const currentMode = options.mode || "quiz";
           let result;
-          if (currentMode === "flashcards") {
+          if (currentMode === "both") {
+            result = validateCombined(parsedData, options.count);
+            if (!result.ok) {
+              if (result.reason === "NO_VALID_CONTENT") { setStatus("empty"); return; }
+              if (!isRetry) { isRetry = true; continue; }
+              setErrorCode("BAD_MODEL_OUTPUT"); setStatus("error"); return;
+            }
+            setQuiz({ title: result.title, questions: result.questions, cards: result.cards });
+            setDroppedCount(result.droppedCount);
+            setShortfall(result.shortfall ?? 0);
+          } else if (currentMode === "flashcards") {
             result = validateFlashcards(parsedData);
             if (!result.ok) {
               if (result.reason === "NO_VALID_CARDS") { setStatus("empty"); return; }
@@ -191,7 +201,13 @@ export default function useQuiz() {
       try { parsedData = JSON.parse(json.raw); } catch {}
       if (!parsedData) { setErrorCode("BAD_MODEL_OUTPUT"); return; }
 
-      if (mode === "flashcards") {
+      if (mode === "both") {
+        const result = validateCombined(parsedData, requestedCount);
+        if (!result.ok) { setErrorCode("BAD_MODEL_OUTPUT"); return; }
+        setQuiz({ title: result.title, questions: result.questions, cards: result.cards });
+        setDroppedCount(result.droppedCount);
+        setShortfall(result.shortfall ?? 0);
+      } else if (mode === "flashcards") {
         const result = validateFlashcards(parsedData);
         if (!result.ok) { setErrorCode("BAD_MODEL_OUTPUT"); return; }
         setQuiz({ title: result.title, cards: result.cards });

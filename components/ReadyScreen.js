@@ -1,6 +1,6 @@
 "use client";
 
-export default function ReadyScreen({ quiz, settings, requestedCount, onStart, onReset }) {
+export default function ReadyScreen({ quiz, settings, requestedCount, mode, onStart, onReset }) {
   return (
     <div className="flex flex-col gap-[32px] w-full items-center text-center py-[48px]">
       <div className="flex flex-col gap-[16px] items-center">
@@ -27,12 +27,29 @@ export default function ReadyScreen({ quiz, settings, requestedCount, onStart, o
         )}
 
         <div className="flex flex-col gap-[12px] w-full mt-[16px]">
-          <button
-            onClick={onStart}
-            className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
-          >
-            Start quiz
-          </button>
+          {mode === "both" ? (
+            <>
+              <button
+                onClick={() => onStart("flashcards")}
+                className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+              >
+                Study flashcards
+              </button>
+              <button
+                onClick={() => onStart("quiz")}
+                className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+              >
+                Take quiz
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => onStart(mode)}
+              className="w-full sm:w-auto px-[24px] py-[12px] bg-[var(--primary)] text-[var(--card)] rounded-[4px] text-[16px] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
+            >
+              Start {mode === "flashcards" ? "flashcards" : "quiz"}
+            </button>
+          )}
           <button
             onClick={onReset}
             className="w-full sm:w-auto px-[24px] py-[12px] bg-transparent text-[var(--ink-soft)] hover:text-[var(--ink)] rounded-[4px] text-[14px] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
@@ -42,7 +59,7 @@ export default function ReadyScreen({ quiz, settings, requestedCount, onStart, o
         </div>
 
         <span style={{ fontFamily: "var(--font-ibm-plex-mono)" }} className="text-[12px] text-[var(--ink-soft)] mt-[16px]">
-          1-4 to answer &middot; arrow keys to move
+          {mode === "flashcards" ? "space to flip \u00B7 arrow keys to move" : mode === "quiz" ? "1-4 to answer \u00B7 arrow keys to move" : "select an activity to start"}
         </span>
       </div>
     </div>

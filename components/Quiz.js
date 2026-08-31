@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import QuestionCard from "./QuestionCard";
 import Results from "./Results";
 
-export default function Quiz({ quiz, reset }) {
+export default function Quiz({ quiz, reset, mode }) {
   const [answers, setAnswers] = useState({});
   const [activeIds, setActiveIds] = useState(quiz.questions.map(q => q.id));
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -61,12 +61,7 @@ export default function Quiz({ quiz, reset }) {
   if (isFinished) {
     return (
       <div className="animate-screen-enter">
-        <Results 
-          quiz={quiz} 
-          answers={answers} 
-          onRetest={handleRetest} 
-          onReset={reset} 
-        />
+        <Results quiz={quiz} answers={answers} onRetest={handleRetest} onReset={reset} mode={mode} />
       </div>
     );
   }

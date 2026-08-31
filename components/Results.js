@@ -1,6 +1,6 @@
 "use client";
 
-export default function Results({ quiz, answers, onRetest, onReset }) {
+export default function Results({ quiz, answers, onRetest, onReset, mode }) {
   const { title, questions } = quiz;
   const wrongIds = [];
   let score = 0;
@@ -88,7 +88,7 @@ export default function Results({ quiz, answers, onRetest, onReset }) {
               : "border border-[var(--rule)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--ink-soft)]"
           }`}
         >
-          New topic
+          {mode === "both" ? "Done" : "New topic"}
         </button>
       </div>
     </div>

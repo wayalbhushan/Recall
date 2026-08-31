@@ -75,7 +75,7 @@ function FlipCard({ card, isActive }) {
   );
 }
 
-export default function FlashcardDeck({ deck, reset }) {
+export default function FlashcardDeck({ deck, reset, mode }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { title, cards } = deck;
   const total = cards.length;
@@ -155,7 +155,7 @@ export default function FlashcardDeck({ deck, reset }) {
           onClick={reset}
           className="text-[14px] text-[var(--ink-soft)] hover:text-[var(--ink)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-[4px] px-[8px] py-[4px]"
         >
-          New topic
+          {mode === "both" ? "Done" : "New topic"}
         </button>
       </div>
     </div>
