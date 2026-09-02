@@ -6,20 +6,22 @@ Recall is a web application that generates custom multiple-choice quizzes and fl
 
 ## Demo
 * **Live App**: [https://recall-henna-two.vercel.app/](https://recall-henna-two.vercel.app/)
-* **Video Walkthrough**: [Watch Demo Video](https://youtu.be/zxvYLdLumdM)
+* **Video Walkthrough**: [Watch Demo Video](https://youtu.be/-QraKYcyJn4)
 
 ### Screenshots
 ![Controls expanded](./screenshots/controls.png)
 ![Ready screen](./screenshots/ready.png)
+![Flashcard front](./screenshots/flash1.png)
+![Flashcard back](./screenshots/flash2.png)
 ![Active quiz question](./screenshots/quiz.png)
-![Results screen](./screenshots/results.png)
+![Results screen](./screenshots/result.png)
 
 ## Setup
 
 1. **Clone and Install**
    Clone the repository to your local machine and install the dependencies:
    ```bash
-   git clone [ADD REPO URL HERE]
+   git clone https://github.com/wayalbhushan/Recall.git
    cd recall
    npm install
    ```
